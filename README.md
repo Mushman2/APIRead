@@ -5,4 +5,5 @@ The program is written in kotlin, and uses the Github Java API library
 
 ####Commit structure
 
-This repo was originally copied from my LCA repo, and carried over the old commits. This was done to bring over the basic project structure and boilerplate. 
+This repo was originally copied from my LCA repo, and carried over the old commits. This was done to bring over the basic project structure and boilerplate.
+This project starts at commit 7239332b 
