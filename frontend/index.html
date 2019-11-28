@@ -1,21 +1,41 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
-<!-- Load d3.js -->
+<!-- Load D3 -->
 <script src="https://d3js.org/d3.v4.js"></script>
 
-<!-- Create a div where the graph will take place -->
-<div id="my_dataviz"></div>
-
+<body style="background: #ede4ed; font-family: 'Comic Sans MS', cursive, sans-serif">
+<h2>Visualisations of commit activity on the D3 Github</h2>
+<!-- Create div for the graph -->
+<div id="graph" ></div>
+</body>
 <script>
 
-    // set the dimensions and margins of the graph
+    // Set dimensions for graph
     var margin = {top: 10, right: 30, bottom: 30, left: 60},
-        width = 460 - margin.left - margin.right,
+        width = 720 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
-    // append the svg object to the body of the page
-    var svg = d3.select("#my_dataviz")
+    // Create SVG object
+    var plot1 = d3.select("#graph")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+    // Create SVG object
+    var plot2 = d3.select("#graph")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+    // Create SVG object
+    var plot3 = d3.select("#graph")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -26,40 +46,173 @@
     //Read the data
     d3.csv("https://raw.githubusercontent.com/Mushman2/APIRead/master/commits.csv",
 
-        // When reading the csv, I must format variables:
-        function(d){
-            return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
+        // Format variables from CSV
+        function (d) {
+            return {
+                date: d3.timeParse("%Y-%m-%d %H:%M:%S.%L")(d.date),
+                total: d.total,
+                additions: d.additions,
+                deletions: d.deletions,
+                comments: d.comments,
+                messageLength: d.messageLength
+            }
         },
 
-        // Now I can use this dataset:
-        function(data) {
+        function (data) {
 
-            // Add X axis --> it is a date format
-            var x = d3.scaleTime()
-                .domain(d3.extent(data, function(d) { return d.date; }))
-                .range([ 0, width ]);
-            svg.append("g")
-                .attr("transform", "translate(0," + height + ")")
-                .call(d3.axisBottom(x));
+            //     X axis for date
+                var x = d3.scaleTime()
+                    .domain(d3.extent(data, function(d) { return d.date; }))
+                    .range([ 62, width ]);
+                plot1.append("g")
+                    .attr("transform", "translate(0," + (height - 20) + ")")
+                    .call(d3.axisBottom(x));
 
-            // Add Y axis
+            // X axis
+            // var x = d3.scaleLinear()
+            //     .domain([0, d3.max(data, function (d) {
+            //         return d.total;
+            //     })])
+            //     .range([60, width]);
+            // plot1.append("g")
+            //     .attr("transform", "translate(0," + (height - 20) + ")")
+            //     .call(d3.axisBottom(x));
+
+            // Y axis
             var y = d3.scaleLinear()
-                .domain([0, d3.max(data, function(d) { return +d.value; })])
-                .range([ height, 0 ]);
-            svg.append("g")
+                .domain([0, d3.max(data, function (d) {
+                    return +d.messageLength;
+                })])
+                .range([height - 22, 0]);
+            plot1.append("g")
+                .attr("transform", "translate(60,0)")
                 .call(d3.axisLeft(y));
 
-            // Add the line
-            svg.append("path")
-                .datum(data)
-                .attr("fill", "none")
-                .attr("stroke", "steelblue")
-                .attr("stroke-width", 1.5)
-                .attr("d", d3.line()
-                    .x(function(d) { return x(d.date) })
-                    .y(function(d) { return y(d.value) })
-                )
+            // X Axis Label
+            plot1.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", width)
+                .attr("y", height + 15)
+                .text("Date");
 
-        })
+            // Y Axis Label
+            plot1.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("y", 6)
+                .attr("transform", "rotate(-90)")
+                .text("Lines altered");
+
+            // Plot Dots
+            plot1.append('g')
+                .selectAll("dot")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) {
+                    return x(d.date);
+                })
+                .attr("cy", function (d) {
+                    return y(d.total);
+                })
+                .attr("r", 1.5)
+                .style("fill", "#690000")
+
+            //X Axis
+            var x2 = d3.scaleLinear()
+                .domain([0, d3.max(data, function (d) {
+                    return +d.messageLength;
+                })])
+                .range([62, width]);
+            plot2.append("g")
+                .attr("transform", "translate(0," + (height - 22) + ")")
+                .call(d3.axisBottom(x2));
+
+            // Y axis
+            var y2 = d3.scaleLinear()
+                .domain([0, d3.max(data, function (d) {
+                    return +d.total;
+                })])
+                .range([height - 22, 0]);
+            plot2.append("g")
+                .attr("transform", "translate(60,0)")
+                .call(d3.axisLeft(y2));
+
+            // X Axis Label
+            plot2.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", width)
+                .attr("y", height + 15)
+                .text("Commit message length");
+
+            // Y Axis Label
+            plot2.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("y", 6)
+                .attr("transform", "rotate(-90)")
+                .text("Total line changes");
+
+            // Plot Dots
+            plot2.append('g')
+                .selectAll("dot")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) {
+                    return x2(d.messageLength);
+                })
+                .attr("cy", function (d) {
+                    return y2(d.total);
+                })
+                .attr("r", 1.5)
+                .style("fill", "#006900")
+
+
+            //Axes
+            plot3.append("g")
+                .attr("transform", "translate(0," + (height - 22) + ")")
+                .call(d3.axisBottom(x));
+            plot3.append("g")
+                .attr("transform", "translate(60,0)")
+                .call(d3.axisLeft(y));
+
+            // X Axis Label
+            plot3.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", width)
+                .attr("y", height + 15)
+                .text("Circle radius: Number of comments | X Axis: Date");
+
+            // Y Axis Label
+            plot3.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("y", 6)
+                .attr("transform", "rotate(-90)")
+                .text("Lines altered");
+
+            // Plot Dots
+            plot3.append('g')
+                .selectAll("dot")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) {
+                    return x(d.date);
+                })
+                .attr("cy", function (d) {
+                    return y(d.total);
+                })
+                .attr("r", function (d) {
+                    return d.comments;
+                })
+                .style("fill", "#000069")
+
+        }
+    )
 
 </script>

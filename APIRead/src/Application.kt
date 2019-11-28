@@ -2,7 +2,6 @@
 import org.eclipse.egit.github.core.client.GitHubClient
 import org.eclipse.egit.github.core.service.CommitService
 import org.eclipse.egit.github.core.service.RepositoryService
-import org.eclipse.egit.github.core.service.UserService
 import java.io.File
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -10,12 +9,16 @@ import java.time.format.DateTimeFormatter
 fun main(){
         val username = "Mushman2"
         val loginToken = "326363b43560598c7d91ecf2e128a2b64123ae6a"
+
+        val repoOwner = "mbostock"
+        val repoName = "d3"
+
         val client = GitHubClient()
         client.setCredentials(username, loginToken)
 
         val repositoryService = RepositoryService(client)
         val commitService = CommitService(client)
-        val repo = repositoryService.getRepository("mbostock", "d3")
+        val repo = repositoryService.getRepository(repoOwner, repoName)
 
         println(repo.createdAt)
         val commitsList = commitService.getCommits({repo.generateId()})

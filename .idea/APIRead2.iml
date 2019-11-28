@@ -11,5 +11,6 @@
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
     <orderEntry type="library" name="org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5" level="project" />
     <orderEntry type="library" name="d3.v5" level="application" />
+    <orderEntry type="library" name="d3.v4" level="application" />
   </component>
 </module>
