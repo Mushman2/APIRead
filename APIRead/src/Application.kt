@@ -37,7 +37,7 @@ fun main(){
                 val commit = commitService.getCommit({repo.generateId()},  commitSmall.sha)
                 if(commit.stats != null) {
                         //println("${commit.commit.author.date}, ${commit.commit.author.name}, ${commit.commit.committer.name}, ${commit.stats.additions}, ${commit.stats.deletions}")
-                        file.appendText("${commit.commit.author.date}, ${commit.commit.author.name}, ${commit.commit.committer.name}, ${commit.stats.additions}, ${commit.stats.deletions}, ${commit.stats.total}, ${commit.commit.commentCount}\n")
+                        file.appendText("${commit.commit.author.date}, ${commit.commit.author.name}, ${commit.commit.committer.name}, ${commit.stats.additions}, ${commit.stats.deletions}, ${commit.stats.total}, ${commit.commit.commentCount}, ${commit.commit.message.length}\n")
                 }
         }
     }
